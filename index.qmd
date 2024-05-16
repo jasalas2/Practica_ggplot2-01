@@ -1,0 +1,156 @@
+---
+title: "Ejemplos de gráficos de ggplot2 y plotly"
+format: html
+toc: true
+lang: es
+theme: minty
+---
+
+# Carga de paquetes
+
+```{r}
+#| label: carga-paquetes
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(DT)
+library(gapminder)
+library(ggthemes)
+```
+
+# Conjunto de datos
+
+## mpg
+
+```{r}
+#| label: tabla-mpg
+
+mpg |>
+  select(manufacturer, year, cty, hwy) |>
+  datatable(
+    options = list(
+      pageLength = 5,
+      language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json')
+    )
+  )
+```
+
+## diamonds
+
+```{r}
+#| label: tabla-diamonds
+
+diamonds |>
+  datatable(
+    options = list(
+      pageLength = 5,
+      language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json')
+    )
+  )
+```
+
+## gapminder
+
+```{r}
+#| label: tabla-gapminder
+
+gapminder |>
+  datatable(
+    options = list(
+      pageLength = 5,
+      language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json')
+    )
+  )
+```
+
+# ggplot2
+
+```{r}
+#| label: ggplot2-01
+
+ggplot(data = mpg) + geom_point(aes(x = displ, y = hwy))
+```
+
+```{r}
+#| label: ggplot2-02
+
+mpg |>
+  ggplot(aes(x = displ, y = hwy)) + 
+  geom_point()
+```
+
+```{r}
+#| label: ggplot2-03
+
+mpg |>
+  ggplot(aes(x = displ, y = hwy, colour = class)) + 
+  geom_point()
+```
+
+```{r}
+#| label: ggplot2-04
+
+mpg |>
+  ggplot(aes(x = displ, y = hwy, shape = class, colour = class)) + 
+  geom_point()
+```
+
+```{r}
+#| label: ggplot2-05
+
+# Gráfico de dispersión de cilindrada vs millas por galón en autopista
+# con formas y colores correspondientes al tipo de automóvil
+mpg |>
+  ggplot(aes(x = displ, y = hwy, shape = class, color = class)) +
+  geom_point() +
+  scale_shape_manual(values = c(25, 1, 2, 3, 4, 5, 6)) +
+  scale_color_manual(values = c("lightblue", "blue", "green", "purple", "orange", "brown", "pink"))
+```
+
+
+```{r}
+#| label: ggplot2-06
+
+# Gráfico de dispersión que muestre la relación entre el PIB per cápita (x) y esperanza de vida (y)
+
+gapminder |>
+  filter(year == 2007) |>
+  ggplot(aes(x = gdpPercap, y = lifeExp, color = continent)) +
+  geom_point() 
+```
+
+```{r}
+#| label: ggplot2-07
+
+# Gráfico de dispersión que muestre la relación entre el PIB per cápita (x) y esperanza de vida (y)
+
+gapminder |>
+  filter(year == 2007) |>
+  ggplot(aes(x = gdpPercap, y = lifeExp)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+```{r}
+#| label: ggplot2-08
+#| warning: false
+#| message: false
+
+# Gráfico de dispersión que muestre la relación entre 
+# el PIB per cápita (x) y esperanza de vida (y)
+# para el año 2007
+# coloreado por continente
+
+gapminder |>
+  filter(year == 2007) |>
+  ggplot(aes(x = gdpPercap, y = lifeExp, color = continent)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  ggtitle("Relación entre PIB per capita y esperanza de vida en 2007") +
+  xlab("PIB per capita EEUU ($)") +
+  ylab("Esperanza de vida (años)") + 
+  labs(color = "Continente") +
+  theme_economist()
+```
+
